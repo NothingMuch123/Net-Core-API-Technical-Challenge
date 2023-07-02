@@ -26,6 +26,6 @@ namespace Technical_Challenge.Models.API
     {
         public string? Name { get; set; } = null;
         public string? Country { get; set; } = null;
-        public bool? IsActive { get; set; } = true;
+        public bool? IsActive { get; set; } = null;
     }
 }

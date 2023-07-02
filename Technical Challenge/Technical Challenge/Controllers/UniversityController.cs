@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Technical_Challenge.DAL;
 using Technical_Challenge.Models.API;
 
@@ -17,6 +18,7 @@ namespace Technical_Challenge.Controllers
         #endregion
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "basic")]
         public async Task<IActionResult> GetAll([FromQuery] GetUniversityRequest req)
         {
             var result = await _universityDAL.GetList(req);
@@ -28,6 +30,7 @@ namespace Technical_Challenge.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = "basic")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _universityDAL.Get(id);
@@ -35,12 +38,14 @@ namespace Technical_Challenge.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "basic")]
         public async Task<IActionResult> Post([FromBody] CreateUniversityRequest req)
         {
             return StatusCode(201, await _universityDAL.Create(req));
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = "basic")]
         public async Task<IActionResult> Put([FromBody] UpdateUniversityRequest req)
         {
             var result = await _universityDAL.Update(req);
@@ -48,6 +53,7 @@ namespace Technical_Challenge.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = "basic")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _universityDAL.Delete(id);
@@ -55,6 +61,7 @@ namespace Technical_Challenge.Controllers
         }
 
         [HttpPost("bookmark/{id}")]
+        [Authorize(AuthenticationSchemes = "basic")]
         public async Task<IActionResult> Bookmark(int id, [FromQuery] bool bookmark = true)
         {
             var u = await _universityDAL.Get(id);
