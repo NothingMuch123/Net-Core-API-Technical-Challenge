@@ -7,7 +7,7 @@ namespace Technical_Challenge.DAL
 {
     public interface IUniversityDAL
     {
-        public Task<List<University>> GetList();
+        public Task<List<University>> GetList(GetUniversityRequest req);
         public Task<University?> Get(int id);
         public Task<University> Create(CreateUniversityRequest req);
         public Task<University?> Update(UpdateUniversityRequest req);
@@ -23,9 +23,19 @@ namespace Technical_Challenge.DAL
             _context = context;
         }
 
-        public async Task<List<University>> GetList()
+        public async Task<List<University>> GetList(GetUniversityRequest req)
         {
-            return await _context.Universities.Where(u => u.DeletedAt == null).OrderByDescending(u => u.IsBookmark).ThenBy(u => u.Id).ToListAsync();
+            var query = _context.Universities.Where(u => u.DeletedAt == null);
+
+            // Filter
+            if (req.Name != null)
+                query = query.Where(u => u.Name.Contains(req.Name));
+            if (req.Country != null)
+                query = query.Where(u => u.Country.Contains(req.Country));
+            if (req.IsActive.HasValue)
+                query = query.Where(u => u.IsActive ==  req.IsActive.Value);
+
+            return await query.OrderByDescending(u => u.IsBookmark).ThenBy(u => u.Id).ToListAsync();
         }
 
         public async Task<University?> Get(int id)

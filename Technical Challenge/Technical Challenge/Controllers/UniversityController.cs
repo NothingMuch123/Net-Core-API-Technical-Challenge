@@ -17,9 +17,9 @@ namespace Technical_Challenge.Controllers
         #endregion
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetUniversityRequest req)
         {
-            return Ok(await _universityDAL.GetList());
+            return Ok(await _universityDAL.GetList(req));
         }
 
         [HttpGet("{id}")]

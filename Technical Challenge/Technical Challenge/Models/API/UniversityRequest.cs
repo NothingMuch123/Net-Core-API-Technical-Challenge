@@ -21,4 +21,11 @@ namespace Technical_Challenge.Models.API
         public List<string>? Webpages { get; set; }
         public bool? IsActive { get; set; } = true;
     }
+
+    public class GetUniversityRequest
+    {
+        public string? Name { get; set; } = null;
+        public string? Country { get; set; } = null;
+        public bool? IsActive { get; set; } = true;
+    }
 }
