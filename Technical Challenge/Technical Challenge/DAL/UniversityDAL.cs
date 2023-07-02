@@ -7,7 +7,7 @@ namespace Technical_Challenge.DAL
 {
     public interface IUniversityDAL
     {
-        public Task<List<University>> GetList(GetUniversityRequest req);
+        public Task<(List<University>, PaginationResponse)> GetList(GetUniversityRequest req);
         public Task<University?> Get(int id);
         public Task<University> Create(CreateUniversityRequest req);
         public Task<University?> Update(UpdateUniversityRequest req);
@@ -23,7 +23,7 @@ namespace Technical_Challenge.DAL
             _context = context;
         }
 
-        public async Task<List<University>> GetList(GetUniversityRequest req)
+        public async Task<(List<University>, PaginationResponse)> GetList(GetUniversityRequest req)
         {
             var query = _context.Universities.Where(u => u.DeletedAt == null);
 
@@ -35,7 +35,21 @@ namespace Technical_Challenge.DAL
             if (req.IsActive.HasValue)
                 query = query.Where(u => u.IsActive ==  req.IsActive.Value);
 
-            return await query.OrderByDescending(u => u.IsBookmark).ThenBy(u => u.Id).ToListAsync();
+            // Order
+            query = query.OrderByDescending(u => u.IsBookmark).ThenBy(u => u.Id);
+
+            // Pagination
+            var count = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(((double)count / (double)req.Count));
+            req.Page = count <= 0 ? 1 : Math.Clamp(req.Page, 1, totalPages);
+            query = query.Skip(req.Count * (req.Page - 1)).Take(req.Count);
+
+            return (await query.ToListAsync(), new PaginationResponse()
+            {
+                Page = req.Page,
+                TotalPage = totalPages,
+                TotalCount = count,
+            });
         }
 
         public async Task<University?> Get(int id)

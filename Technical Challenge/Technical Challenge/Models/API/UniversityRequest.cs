@@ -22,7 +22,7 @@ namespace Technical_Challenge.Models.API
         public bool? IsActive { get; set; } = true;
     }
 
-    public class GetUniversityRequest
+    public class GetUniversityRequest : PaginationRequest
     {
         public string? Name { get; set; } = null;
         public string? Country { get; set; } = null;

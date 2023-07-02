@@ -19,7 +19,12 @@ namespace Technical_Challenge.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] GetUniversityRequest req)
         {
-            return Ok(await _universityDAL.GetList(req));
+            var result = await _universityDAL.GetList(req);
+            return Ok(new Dictionary<string, object>()
+            {
+                { "data", result.Item1 },
+                { "pagination", result.Item2 }
+            });
         }
 
         [HttpGet("{id}")]
